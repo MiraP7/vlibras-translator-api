@@ -10,57 +10,47 @@
   "scripts": {
     "build": "babel src --out-dir dist --copy-files --include-dotfiles",
     "dev": "npm run build && DEBUG=vlibras-translator-*:* NODE_ENV=dev node dist/index.js",
-    "start": "DEBUG=vlibras-translator-api:info NODE_ENV=production node dist/index.js"
+    "start": "DEBUG=vlibras-translator-api:info NODE_ENV=production node dist/index.js",
+    "prepare": "node .husky/install.mjs"
   },
   "engines": {
     "node": "10.16"
   },
-  "husky": {
-    "hooks": {
-      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
-    "*.js": [
-      "eslint --fix",
-      "git add"
-    ]
+    "*.js": "eslint --fix"
   },
   "dependencies": {
-    "@babel/runtime": "^7.9.6",
+    "@babel/runtime": "^7.29.7",
     "amqplib": "^0.5.6",
-    "compression": "^1.7.4",
-    "cookie-parser": "^1.4.5",
-    "cors": "^2.8.5",
-    "debug": "~2.6.9",
-    "dotenv": "^6.2.0",
-    "express": "~4.16.0",
-    "express-validator": "^5.3.1",
-    "helmet": "^3.22.0",
-    "http-errors": "~1.6.2",
-    "ioredis": "^4.17.1",
-    "mongoose": "^5.9.16",
-    "morgan": "~1.9.0",
-    "swagger-ui-express": "^4.1.4",
-    "uuid": "^3.4.0"
+    "compression": "^1.8.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "debug": "^4.4.3",
+    "dotenv": "^17.4.2",
+    "express": "^4.21.2",
+    "express-validator": "^7.3.2",
+    "helmet": "^8.2.0",
+    "http-errors": "^2.0.1",
+    "ioredis": "^5.11.1",
+    "mongoose": "^9.7.3",
+    "morgan": "^1.11.0",
+    "swagger-ui-express": "^5.0.1",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.9.6",
-    "@babel/plugin-transform-runtime": "^7.9.6",
-    "@babel/preset-env": "^7.9.6",
-    "@commitlint/cli": "^8.3.5",
-    "@commitlint/config-conventional": "^8.3.4",
-    "babel-preset-airbnb": "^4.5.0",
-    "commitizen": "^4.2.2",
-    "cz-conventional-changelog": "^3.2.0",
-    "eslint": "^6.8.0",
-    "eslint-config-airbnb-base": "^14.1.0",
-    "eslint-plugin-import": "^2.20.2",
-    "husky": "^4.2.5",
-    "lint-staged": "^10.2.6"
+    "@babel/cli": "^7.29.7",
+    "@babel/core": "^7.29.7",
+    "@babel/plugin-transform-runtime": "^7.29.7",
+    "@babel/preset-env": "^7.29.7",
+    "@commitlint/cli": "^21.2.0",
+    "@commitlint/config-conventional": "^21.2.0",
+    "commitizen": "^4.3.2",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^8.57.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.32.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.8"
   },
   "config": {
     "commitizen": {

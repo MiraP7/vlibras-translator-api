@@ -11,30 +11,31 @@ module.exports = {
     SharedArrayBuffer: 'readonly',
   },
   parserOptions: {
-    ecmaVersion: 2018,
+    ecmaVersion: 2022,
     sourceType: 'module',
   },
   rules: {
-    "no-underscore-dangle": [
-      "error",
-      {
-        "allow": [
-          "_id"
-        ],
-      },
-    ],
-    "no-console": [
-      "error",
+    'linebreak-style': 'off',
+    'no-underscore-dangle': [
+      'error',
       {
         allow: [
-          "error"
+          '_id',
         ],
       },
     ],
-    "no-unused-vars": [
-      "error",
+    'no-console': [
+      'error',
       {
-        argsIgnorePattern: "^_",
+        allow: [
+          'error',
+        ],
+      },
+    ],
+    'no-unused-vars': [
+      'error',
+      {
+        argsIgnorePattern: '^_',
       },
     ],
   },

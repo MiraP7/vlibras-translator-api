@@ -1,5 +1,5 @@
 import createError from 'http-errors';
-import uuid from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 import env from '../../config/environments/environment';
 import queueConnection from '../util/queueConnection';
 import redisConnection from '../util/redisConnection';
@@ -12,13 +12,42 @@ import {
   TRANSLATION_TIMEOUT,
   TRANSLATION_PAYLOAD_TTL,
 } from '../../config/timeout';
-
-
 import phraseBreaker from '../util/phraseBreaker';
+
+/**
+ * Asynchronous stores the statistics of the traslator at the DB.
+ *
+ * @param {Request} req - The http(s) request.
+ */
+async function storeStats(req) {
+  const phrases = await phraseBreaker(req.body.text);
+
+  phrases.forEach(async (phrase) => {
+    const translationAlreadyExists = await Hit.findOne({ text: phrase });
+
+    if (translationAlreadyExists) {
+      const translationHit = new Hit({
+        text: translationAlreadyExists.text,
+        hits: translationAlreadyExists.hits + 1,
+      });
+      await translationHit.save();
+      return translationHit;
+    }
+
+    const translationHit = new Hit({
+      text: phrase,
+      hits: 1,
+    });
+
+    await translationHit.save();
+
+    return translationHit;
+  });
+}
 
 const textTranslator = async function textTranslatorController(req, res, next) {
   try {
-    const uid = uuid();
+    const uid = uuidv4();
     const AMQPConnection = await queueConnection();
     const AMQPChannel = await AMQPConnection.createChannel();
 
@@ -111,36 +140,5 @@ const textTranslator = async function textTranslatorController(req, res, next) {
     return next(error);
   }
 };
-
-/**
- * Asynchronous stores the statistics of the traslator at the DB.
- *
- * @param {Request} req - The http(s) request.
- */
- const storeStats = async function storeStatsController(req) {
-  const phrases = await phraseBreaker(req.body.text);
-
-  phrases.forEach(async (phrase) => {
-    const translationAlreadyExists = await Hit.findOne({ text: phrase });
-
-    if (translationAlreadyExists) {
-      const translationHit = new Hit({
-        text: translationAlreadyExists.text,
-        hits: translationAlreadyExists.hits + 1,
-      });
-      await translationHit.save();
-      return translationHit;
-    }
-
-    const translationHit = new Hit({
-      text: phrase,
-      hits: 1,
-    });
-
-    await translationHit.save();
-
-    return translationHit;
-  });
-}
 
 export default textTranslator;

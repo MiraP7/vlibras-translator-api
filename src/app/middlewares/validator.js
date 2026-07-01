@@ -1,7 +1,7 @@
 import createError from 'http-errors';
 import {
   body, param, query, validationResult,
-} from 'express-validator/check';
+} from 'express-validator';
 import { VALIDATION_VALUES, VALIDATION_ERRORS } from '../../config/validation';
 
 export const textValidationRules = body('text')
@@ -56,7 +56,9 @@ export const checkValidation = function checkRequestValidation(req, _res, next) 
   }
 
   const extractedErrors = [];
-  errors.array().map((err) => extractedErrors.push({ [err.param]: err.msg }));
+  errors.array().forEach((err) => {
+    extractedErrors.push({ [err.path || err.param]: err.msg });
+  });
 
   return next(createError(422, { errors: extractedErrors }));
 };

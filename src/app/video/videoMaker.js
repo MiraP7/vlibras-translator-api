@@ -1,5 +1,5 @@
 import createError from 'http-errors';
-import uuid from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 import env from '../../config/environments/environment';
 import queueConnection from '../util/queueConnection';
 import Video from './Video';
@@ -14,7 +14,7 @@ import {
 
 const videoMaker = async function videoMakerController(req, res, next) {
   try {
-    const uid = uuid();
+    const uid = uuidv4();
     const AMQPConnection = await queueConnection();
     const AMQPChannel = await AMQPConnection.createChannel();
 
@@ -66,15 +66,8 @@ const videoMaker = async function videoMakerController(req, res, next) {
       const query = { uid, status: { $ne: VIDEO_STATUS.generated } };
       const update = { $set: { status: VIDEO_STATUS.failed } };
 
-
-      // VER COM WESNYDY
       try {
-        // update status for failed
         Video.findOneAndUpdate(query, update).exec();
-        // const videoStatusFailed = new VideoStatus({
-        //   status: VIDEO_STATUS.failed,
-        // });
-        // await videoStatusFailed.save();
       } catch (mongoNetworkError) { /* empty */ }
     }, VIDEOGENERATION_TIMEOUT);
 
